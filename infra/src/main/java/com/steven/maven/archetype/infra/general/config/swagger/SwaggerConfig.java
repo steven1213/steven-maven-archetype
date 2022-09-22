@@ -27,16 +27,15 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @Profile({"local", "dev"})
 public class SwaggerConfig {
 
-    @Value("${server.servlet.context-path}")
+    @Value("${server.servlet.context-path:/}")
     private String contextPath;
 
     private ApiInfo initApiInfo() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("steven-maven-archetype API")
                 .version("1.0.0")
-                .description("hello")
-                .contact(new Contact("steven", "https://github.com/stevencao1213", "steven.cao1213@gmail.com"))
-                .license("Apache")
+                .contact(new Contact("steven", "https://github.com/steven1213", "steven.cao1213@gmail.com"))
+                .license("Apache Licence")
                 .build();
         return apiInfo;
     }
@@ -47,14 +46,14 @@ public class SwaggerConfig {
                 .apiInfo(initApiInfo())
                 .groupName("RestfulApi")
                 //.genericModelSubstitutes(DeferredResult.class)
-                .genericModelSubstitutes(ResponseEntity.class)
+//                .genericModelSubstitutes(ResponseEntity.class)
                 .useDefaultResponseMessages(true)
                 .forCodeGeneration(false)
                 // base，最终调用接口后会和paths拼接在一起
                 .pathMapping(contextPath)
                 .select()
                 //加了ApiOperation注解的类，才生成接口文档
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+//                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 //暴露接口地址的包路径（即此包下的类，才生成接口文档）
                 .apis(RequestHandlerSelectors.basePackage("com.steven.maven.archetype"))
                 //自定义的过滤规则

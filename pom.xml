@@ -9,6 +9,7 @@
         <module>infra</module>
         <module>application</module>
         <module>domain</module>
+        <module>model</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -35,18 +36,31 @@
         <application.version>0.0.1-SNAPSHOT</application.version>
         <domain.version>0.0.1-SNAPSHOT</domain.version>
         <infra.version>0.0.1-SNAPSHOT</infra.version>
+        <model.version>0.0.1-SNAPSHOT</model.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <swagger.version>2.9.2</swagger.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
+        <hutool-all.version>5.8.5</hutool-all.version>
     </properties>
-
-
-    <dependencies>
-
-    </dependencies>
 
     <dependencyManagement>
 
         <dependencies>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
             <!--引入swagger2-->
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -85,6 +99,12 @@
                 <groupId>com.steven.maven.archetype</groupId>
                 <artifactId>domain</artifactId>
                 <version>${domain.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.steven.maven.archetype</groupId>
+                <artifactId>model</artifactId>
+                <version>${model.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.steven.maven.archetype</groupId>
