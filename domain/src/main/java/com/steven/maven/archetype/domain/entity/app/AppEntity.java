@@ -28,5 +28,4 @@ public class AppEntity extends BaseEntityModel<AppEntity> implements Serializabl
 
     private String appSecret;
 
-    private String desc;
 }

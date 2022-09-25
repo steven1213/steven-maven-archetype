@@ -1,13 +1,13 @@
-package com.steven.maven.archetype.infra.general.config.swagger;
+package com.steven.maven.archetype.start.config.swagger;
 
 import com.google.common.base.Predicate;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -27,15 +27,15 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @Profile({"local", "dev"})
 public class SwaggerConfig {
 
-    @Value("${server.servlet.context-path:/}")
-    private String contextPath;
+//    @Value("${server.servlet.context-path:/}")
+//    private String contextPath;
 
     private ApiInfo initApiInfo() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("steven-maven-archetype API")
                 .version("1.0.0")
                 .contact(new Contact("steven", "https://github.com/steven1213", "steven.cao1213@gmail.com"))
-                .license("Apache Licence")
+//                .license("Apache Licence")
                 .build();
         return apiInfo;
     }
@@ -44,20 +44,20 @@ public class SwaggerConfig {
     public Docket restfulApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(initApiInfo())
-                .groupName("RestfulApi")
+//                .groupName("RestfulApi")
                 //.genericModelSubstitutes(DeferredResult.class)
 //                .genericModelSubstitutes(ResponseEntity.class)
-                .useDefaultResponseMessages(true)
-                .forCodeGeneration(false)
+//                .useDefaultResponseMessages(true)
+//                .forCodeGeneration(false)
+                .pathMapping("/")
                 // base，最终调用接口后会和paths拼接在一起
-                .pathMapping(contextPath)
+//                .pathMapping(contextPath)
                 .select()
                 //加了ApiOperation注解的类，才生成接口文档
-//                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(RequestHandlerSelectors.basePackage("com.steven.maven.archetype.adapter"))
                 //暴露接口地址的包路径（即此包下的类，才生成接口文档）
-                .apis(RequestHandlerSelectors.basePackage("com.steven.maven.archetype"))
                 //自定义的过滤规则
-                .paths(doFilteringRules())
+                .paths(PathSelectors.any())
                 .build();
     }
 

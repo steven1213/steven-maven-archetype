@@ -1,4 +1,4 @@
-package com.steven.maven.archetype.adatper.h5.controller;
+package com.steven.maven.archetype.adapter.h5.controller;
 
 import com.steven.maven.archetype.infra.general.constant.Constants;
 import com.steven.maven.archetype.infra.general.resp.Resp;

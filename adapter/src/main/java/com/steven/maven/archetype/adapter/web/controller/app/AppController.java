@@ -1,4 +1,4 @@
-package com.steven.maven.archetype.adatper.web.controller.app;
+package com.steven.maven.archetype.adapter.web.controller.app;
 
 import com.steven.maven.archetype.application.service.app.AppService;
 import com.steven.maven.archetype.infra.general.constant.Constants;

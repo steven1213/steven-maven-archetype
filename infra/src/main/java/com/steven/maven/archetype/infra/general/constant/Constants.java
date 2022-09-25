@@ -32,4 +32,8 @@ public final class Constants {
 
     public static final String SIGN = "sign";
 
+    /**
+     * 项目redis key前缀
+     */
+    public static final String REDIS_KEY_PREFIX = "com:steven:maven:archetype";
 }

@@ -21,7 +21,6 @@ CREATE TABLE `t_app`
     `app_id`     varchar(64) NOT NULL COMMENT 'appId',
     `app_secret` varchar(64) NOT NULL COMMENT 'appSecret',
     `app_name`   varchar(64) NOT NULL COMMENT 'app name',
-    `desc`       varchar(256) COMMENT '描述',
     `crt_time`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `upt_time`   datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `creator`    varchar(64) NOT NULL DEFAULT 'system' COMMENT '创建人',
@@ -30,4 +29,4 @@ CREATE TABLE `t_app`
     PRIMARY KEY (`id`),
     KEY          `idx_app_id` (`app_id`) USING BTREE,
     KEY          `idx_upt_time` (`upt_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='应用表';

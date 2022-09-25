@@ -27,7 +27,6 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
         AppEntity appEntity = AppEntity.builder()
                 .appSecret(appSecret)
                 .appId(appId)
-                .desc(generatorReq.getDesc())
                 .appName(generatorReq.getAppName())
                 .build();
         this.save(appEntity);

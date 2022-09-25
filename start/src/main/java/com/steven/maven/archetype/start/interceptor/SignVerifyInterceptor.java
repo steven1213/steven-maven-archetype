@@ -9,8 +9,10 @@ import com.steven.maven.archetype.infra.general.constant.Constants;
 import com.steven.maven.archetype.infra.general.resp.Resp;
 import com.steven.maven.archetype.infra.general.types.ResultCode;
 import com.steven.maven.archetype.infra.general.types.SignModelEnums;
+import com.steven.maven.archetype.infra.general.utils.RedisUtils;
 import com.steven.maven.archetype.infra.general.utils.ServletUtils;
 import com.steven.maven.archetype.infra.general.utils.SignVerifyUtils;
+import com.steven.maven.archetype.start.config.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * @author: steven.cao.
@@ -35,6 +38,9 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
 
     @Resource
     private AppService appService;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     /**
      * 允许请求时间与服务器时间差为15秒
@@ -55,21 +61,17 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
         String apiVersion = request.getHeader(Constants.API_VERSION);
 
         // 验证header是否有参数缺失
-        if (StringUtils.isBlank(appId)
-                || StringUtils.isBlank(timestampStr)
-                || StringUtils.isBlank(nonce)
-                || StringUtils.isBlank(signModel)
-                || StringUtils.isBlank(sign)) {
+        if (StringUtils.isBlank(appId) || StringUtils.isBlank(timestampStr) || StringUtils.isBlank(nonce) || StringUtils.isBlank(signModel) || StringUtils.isBlank(sign)) {
             // header 参数缺失
             ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "参数缺失")));
             return false;
         }
         long currentTime = System.currentTimeMillis();
-        if (Math.abs(currentTime - Long.parseLong(timestampStr)) > MAX_ALLOW_TIME) {
-            // 请求时间与服务器时间不一致
-            ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "请求时间与服务器时间不一致")));
-            return false;
-        }
+//        if (Math.abs(currentTime - Long.parseLong(timestampStr)) > MAX_ALLOW_TIME) {
+//            // 请求时间与服务器时间不一致
+//            ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "请求时间与服务器时间不一致")));
+//            return false;
+//        }
 
         SignModelEnums signModelEnum = SignModelEnums.getByCode(signModel);
         if (Objects.isNull(signModelEnum)) {
@@ -77,14 +79,21 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
             ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "缺少签名验证方式")));
             return false;
         }
-        //TODO 查询与APPID 对应的 APPSecret 从redis中获取或是查询数
-        AppEntity appEntity = appService.getOne(new LambdaQueryWrapper<AppEntity>().eq(AppEntity::getAppId, appId));
-        if (Objects.isNull(appEntity)) {
+        Object redisKey = redisUtil.get(Constants.REDIS_KEY_PREFIX + ":" + appId);
+        String appSecret = null;
+        if (Objects.isNull(redisKey)) {
+            AppEntity appEntity = appService.getOne(new LambdaQueryWrapper<AppEntity>().eq(AppEntity::getAppId, appId));
+            if (Objects.isNull(appEntity)) {
+                ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "appId无效")));
+                return false;
+            }
+            appSecret = appEntity.getAppSecret();
+            redisUtil.set(appId, appSecret, 12 * 60 * 60L + new Random().nextInt(20));
+        }
+        if (StringUtils.isBlank(appSecret)) {
             ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "appId无效")));
             return false;
         }
-        String appSecret = appEntity.getAppSecret();
-
         apiVersion = StringUtils.isBlank(apiVersion) ? Constants.API_VERSION_DEFAULT : apiVersion;
         boolean signVerifyResult = SignVerifyUtils.verify(appId, appSecret, timestampStr, apiVersion, nonce, sign, signModelEnum);
         if (!signVerifyResult) {

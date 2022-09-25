@@ -41,11 +41,21 @@
         <swagger.version>2.9.2</swagger.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <hutool-all.version>5.8.5</hutool-all.version>
+        <redisson-spring-boot-starter.version>3.17.6</redisson-spring-boot-starter.version>
     </properties>
+
+
+    <dependencies>
+    </dependencies>
 
     <dependencyManagement>
 
         <dependencies>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson-spring-boot-starter.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
