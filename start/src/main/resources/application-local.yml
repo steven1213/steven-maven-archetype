@@ -32,7 +32,7 @@ spring:
 api:
   sign:
     verify:
-      enable: true  # 开始api sign 认证
+      enable: false  # 开始api sign 认证
 
 mybatis-plus:
   configuration:

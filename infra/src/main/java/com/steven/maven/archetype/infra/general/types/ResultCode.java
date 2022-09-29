@@ -19,6 +19,11 @@ public enum ResultCode implements BaseEnums {
      */
     FAILURE(-1, "failure"),
 
+    /**
+     * server error.
+     */
+    SERVER_ERROR(500, "Server error."),
+
     ;
 
     private Integer key;

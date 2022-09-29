@@ -4,15 +4,14 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.steven.maven.archetype.application.service.app.AppService;
 import com.steven.maven.archetype.domain.entity.app.AppEntity;
-import com.steven.maven.archetype.infra.general.config.SpringContextUtils;
 import com.steven.maven.archetype.infra.general.constant.Constants;
 import com.steven.maven.archetype.infra.general.resp.Resp;
 import com.steven.maven.archetype.infra.general.types.ResultCode;
 import com.steven.maven.archetype.infra.general.types.SignModelEnums;
-import com.steven.maven.archetype.infra.general.utils.RedisUtils;
 import com.steven.maven.archetype.infra.general.utils.ServletUtils;
 import com.steven.maven.archetype.infra.general.utils.SignVerifyUtils;
-import com.steven.maven.archetype.start.config.RedisUtil;
+import com.steven.maven.archetype.infra.general.utils.ThreadMdcUtils;
+import com.steven.maven.archetype.infra.general.utils.TraceIdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * @author: steven.cao.
@@ -39,9 +37,6 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
     @Resource
     private AppService appService;
 
-    @Resource
-    private RedisUtil redisUtil;
-
     /**
      * 允许请求时间与服务器时间差为15秒
      */
@@ -49,6 +44,7 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         // 如果未开启API签名验证则直接返回true,跳过后续验证
         if (!signEnable) {
             return true;
@@ -67,11 +63,11 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
             return false;
         }
         long currentTime = System.currentTimeMillis();
-//        if (Math.abs(currentTime - Long.parseLong(timestampStr)) > MAX_ALLOW_TIME) {
-//            // 请求时间与服务器时间不一致
-//            ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "请求时间与服务器时间不一致")));
-//            return false;
-//        }
+        if (Math.abs(currentTime - Long.parseLong(timestampStr)) > MAX_ALLOW_TIME) {
+            // 请求时间与服务器时间不一致
+            ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "请求时间与服务器时间不一致")));
+            return false;
+        }
 
         SignModelEnums signModelEnum = SignModelEnums.getByCode(signModel);
         if (Objects.isNull(signModelEnum)) {
@@ -79,17 +75,20 @@ public class SignVerifyInterceptor implements HandlerInterceptor {
             ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "缺少签名验证方式")));
             return false;
         }
-        Object redisKey = redisUtil.get(Constants.REDIS_KEY_PREFIX + ":" + appId);
-        String appSecret = null;
-        if (Objects.isNull(redisKey)) {
-            AppEntity appEntity = appService.getOne(new LambdaQueryWrapper<AppEntity>().eq(AppEntity::getAppId, appId));
-            if (Objects.isNull(appEntity)) {
-                ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "appId无效")));
-                return false;
-            }
-            appSecret = appEntity.getAppSecret();
-            redisUtil.set(appId, appSecret, 12 * 60 * 60L + new Random().nextInt(20));
-        }
+
+        AppEntity appEntity = appService.getOne(new LambdaQueryWrapper<AppEntity>().eq(AppEntity::getAppId, appId));
+        String appSecret = appEntity.getAppSecret();
+//        Object redisKey = redisUtil.get(Constants.REDIS_KEY_PREFIX + ":" + appId);
+//        String appSecret = null;
+//        if (Objects.isNull(redisKey)) {
+//            AppEntity appEntity = appService.getOne(new LambdaQueryWrapper<AppEntity>().eq(AppEntity::getAppId, appId));
+//            if (Objects.isNull(appEntity)) {
+//                ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "appId无效")));
+//                return false;
+//            }
+//            appSecret = appEntity.getAppSecret();
+//            redisUtil.set(appId, appSecret, 12 * 60 * 60L + new Random().nextInt(20));
+//        }
         if (StringUtils.isBlank(appSecret)) {
             ServletUtils.renderString(response, JSONUtil.toJsonStr(Resp.failure(ResultCode.FAILURE.getKey(), "appId无效")));
             return false;

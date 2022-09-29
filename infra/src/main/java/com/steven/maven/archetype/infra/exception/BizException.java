@@ -1,12 +1,13 @@
 package com.steven.maven.archetype.infra.exception;
 
 import com.steven.maven.archetype.infra.general.types.BaseEnums;
-import com.steven.maven.archetype.infra.general.types.ResultCode;
+import lombok.Data;
 
 /**
  * @author: steven.cao
  * @version: 1.8.
  */
+@Data
 public class BizException extends RuntimeException {
     private Integer code;
 

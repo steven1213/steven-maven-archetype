@@ -7,7 +7,7 @@ import lombok.Getter;
  * @version: 1.8.
  */
 @Getter
-public enum YesOrNoEnums implements BaseEnums {
+public enum YesNoEnums implements BaseEnums {
 
     /**
      * 1-yes.
@@ -25,7 +25,7 @@ public enum YesOrNoEnums implements BaseEnums {
 
     private String value;
 
-    YesOrNoEnums(Integer key, String value) {
+    YesNoEnums(Integer key, String value) {
         this.key = key;
         this.value = value;
     }

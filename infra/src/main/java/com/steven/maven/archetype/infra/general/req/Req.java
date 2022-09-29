@@ -18,10 +18,6 @@ import java.io.Serializable;
 @SuperBuilder
 public class Req<T> implements Serializable {
 
-    private Long timestamp;
-
-    private String sign;
-
     @Valid
     private T body;
 }

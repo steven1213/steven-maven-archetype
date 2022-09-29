@@ -3,6 +3,7 @@ package com.steven.maven.archetype.infra.general.resp;
 import com.steven.maven.archetype.infra.general.types.ResultCode;
 import com.steven.maven.archetype.infra.general.utils.ThreadMdcUtils;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@Builder
 public class Resp<T> implements Serializable {
 
     private Integer code;
@@ -26,6 +27,8 @@ public class Resp<T> implements Serializable {
     private String traceId;
 
     private Boolean success;
+
+    private Long timestamp;
 
     private T data;
 
@@ -39,6 +42,10 @@ public class Resp<T> implements Serializable {
 
     public static <T> Resp<T> success(Integer code, String msg, T data) {
         return getResp(code, msg, data);
+    }
+
+    public static <T> Resp<T> failure(ResultCode resultCode) {
+        return failure(resultCode.getKey(), resultCode.getValue(), null);
     }
 
     public static <T> Resp<T> failure(Integer code, String msg) {
@@ -55,6 +62,7 @@ public class Resp<T> implements Serializable {
                 .success(ResultCode.SUCCESS.getKey().equals(code))
                 .msg(msg)
                 .data(data)
+                .timestamp(System.currentTimeMillis())
                 .traceId(ThreadMdcUtils.getTraceId())
                 .build();
     }

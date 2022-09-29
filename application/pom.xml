@@ -21,5 +21,10 @@
             <groupId>com.steven.maven.archetype</groupId>
             <artifactId>domain</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.steven.maven.archetype</groupId>
+            <artifactId>infra</artifactId>
+        </dependency>
     </dependencies>
 </project>
