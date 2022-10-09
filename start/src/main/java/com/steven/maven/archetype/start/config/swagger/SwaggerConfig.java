@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     private ApiInfo initApiInfo() {
-        ApiInfo apiInfo = new ApiInfoBuilder().title("steven-maven-archetype API").version("1.0.0").contact(new Contact("steven", "https://github.com/steven1213", "steven.cao1213@gmail.com")).build();
+        ApiInfo apiInfo = new ApiInfoBuilder().title("API").version("1.0.0").contact(new Contact("steven", "https://github.com/steven1213", "steven.cao1213@gmail.com")).build();
         return apiInfo;
     }
 
@@ -30,7 +30,7 @@ public class SwaggerConfig {
     public Docket restfulApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(initApiInfo()).pathMapping("/").select()
                 //加了ApiOperation注解的类，才生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.steven.maven.archetype.adapter")).paths(PathSelectors.any()).build();
+                .apis(RequestHandlerSelectors.basePackage("com.steven.maven.archetype")).paths(PathSelectors.any()).build();
     }
 
 
