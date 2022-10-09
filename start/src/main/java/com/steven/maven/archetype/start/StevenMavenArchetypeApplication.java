@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @version: 1.8.
  */
 @SpringBootApplication
-@MapperScan(basePackages = {"com.steven.maven.archetype"})
+//@MapperScan(basePackages = {"com.steven.maven.archetype"})
 @ComponentScan(basePackages = {"com.steven.maven.archetype"})
 public class StevenMavenArchetypeApplication {
 
