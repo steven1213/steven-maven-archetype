@@ -1,42 +1,55 @@
-# 自定义 springboot 项目脚手架
+# maven-多模块脚手架制作
 
-## Step 1
+## build
+> mvn archetype:create-from-project
 
-* 进入steven-maven-archetype根目录
-* 执行 mvn archetype:create-from-project
+## 文件修改
+target/generated-sources/archetype/src/main/resources/archetype-resources
 
-## Step 2
+下目录文件修改 前加__rootArtifactId__
+![img.png](img.png)
 
-* 修改配置文件
-* 在第Step 1 执行后,在项目 target/generated-sources/archetype下进行文件替换—————此步操作是为了避免生成的项目包名等未改变，系统报错
+target/generated-sources/archetype/src/main/resources/META-INF/maven   
+修改每个model的id,dir,name和.impl
+![img_2.png](img_2.png)
 
-修改内容一般为,eg:
+target/generated-sources/archetype/src/main/resources/archetype-resources/pom.xml  
+添加module  
+![img_3.png](img_3.png)
 
+设置各module的版本
+![img_4.png](img_4.png)
+
+对各module的依赖进行修改
+![img_5.png](img_5.png)
+
+target/generated-sources/archetype/src/main/resources/archetype-resources/__rootArtifactId__-start/src/main/java/start
+目录保持一致,若有出入进行相应调整
+
+对各module中pom.xml中对其他模块的依赖进行调整
+target/generated-sources/archetype/src/main/resources/archetype-resources/__rootArtifactId__-application/pom.xml
+![img_6.png](img_6.png)
+
+
+各模块中对import引入进行调整 可按Directory全部替换
+eg:${package}.${artifactId} ->> ${package}.domain ; 每个模块都要检查替换一次
+
+## 发布
+进入目录 target/generated-sources/archetype 执行命令
+> mvn install or mvn deploy
+
+# 使用脚手架
+eg.创建一个fan-backend的项目
 ~~~
-.idea 文件删除
-.mvn 文件删除
-.iml 文件删除
-
-`com.steven.maven.archetype` 替换为 ${package}
-`0.0.1-SNAPSHOT` 替换为${versionn}
-
-id="adapter" 替换为 id="__artifactId__-adapter"
-id="infra" 替换为 id="__artifactId__-infra"
-id="application" 替换为 id="__artifactId__-application"
-id="domain" 替换为 id="__artifactId__-domain"
-id="start" 替换为 id="__artifactId__-start"
-
-dir="adapter" 替换为 dir="__artifactId__-adapter"
-dir="infra" 替换为 dir="__artifactId__-infra"
-dir="application" 替换为 dir="__artifactId__-application"
-dir="domain" 替换为 dir="__artifactId__-domain"
-dir="start" 替换为 dir="__artifactId__-start"
-
-name="adapter" 替换为 name="__artifactId__-adapter"
-name="infra" 替换为 name="__artifactId__-infra"
-name="application" 替换为 name="__artifactId__-application"
-name="domain" 替换为 name="__artifactId__-domain"
-name="start" 替换为 name="__artifactId__-start"
-
+mvn -U archetype:generate \
+-DarchetypeGroupId=com.steven.maven.archetype \
+-DarchetypeArtifactId=steven-maven-archetype-archetype \
+-DarchetypeVersion=0.0.1-SNAPSHOT \
+-Dversion=1.0.0-SNAPSHOT \
+-DgroupId=com.fan.backend \
+-DartifactId=fan-backend \
+-DappName=fan-backend 
 ~~~
+
+
 
