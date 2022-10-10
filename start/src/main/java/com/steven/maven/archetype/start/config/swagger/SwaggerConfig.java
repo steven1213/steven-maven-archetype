@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     private ApiInfo initApiInfo() {
-        ApiInfo apiInfo = new ApiInfoBuilder().title("API").version("1.0.0").contact(new Contact("steven", "https://github.com/steven1213", "steven.cao1213@gmail.com")).build();
+        ApiInfo apiInfo = new ApiInfoBuilder().title("API").version("1.0.0").build();
         return apiInfo;
     }
 

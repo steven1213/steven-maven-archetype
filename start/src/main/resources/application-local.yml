@@ -30,3 +30,10 @@ mybatis-plus:
         logic-not-delete-value: 0
         logic-delete-value: 1
   mapper-locations: com/steven/maven/archetype/**/*.xml
+logging:
+  config: classpath:logback-spring.xml
+  path: ./logs
+  level:
+    mapper: debug
+    org:
+      mybatis: debug

@@ -24,6 +24,10 @@ public class ThreadMdcUtils {
         }
     }
 
+    public static void clear() {
+        MDC.clear();
+    }
+
     public static String getTraceId() {
         return MDC.get(Constants.TRACE_ID);
     }

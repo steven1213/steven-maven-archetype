@@ -2,6 +2,8 @@ package com.steven.maven.archetype.adapter.h5.controller;
 
 import com.steven.maven.archetype.infra.general.constant.Constants;
 import com.steven.maven.archetype.infra.general.resp.Resp;
+import com.steven.maven.archetype.infra.log.opt.OperationLog;
+import com.steven.maven.archetype.infra.log.sys.SysLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ public class H5TestController {
 
     @ApiOperation("h5测试接口")
     @GetMapping("/hello")
+    @OperationLog(desc = "测试请求")
+    @SysLog(printReturn = false)
     public Resp<String> helloH5() {
         return Resp.success("hello,h5");
     }
